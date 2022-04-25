@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>{{ $title ?? env('APP_NAME') }}</title>
+<title>Eutranet - Laravel Init</title>
 <meta name="description" content="{{ $description ?? env('APP_DESCRIPTION') }}">
 <meta name="author" content="{{ env('APP_AUTHOR')}}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">

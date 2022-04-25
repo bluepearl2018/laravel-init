@@ -9,20 +9,22 @@ use Eutranet\Init\Http\Middleware\InitMigratedMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Eutranet\Init\View\Composers\InitConfigComposer;
+use Eutranet\Init\View\Components\Meta;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 
 class InitServiceProvider extends PackageServiceProvider
 {
-
 	public function configurePackage(Package $package): void
 	{
 		$package
 			->name('laravel-init')
-			->hasConfigFile('eutranet-init') // php artisan vendor:publish --tag=your-laravel-init-name-config
+			->hasConfigFile(['eutranet-init', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
 			->hasViews('init')
-			// ->hasViewComposer('*', ViewComposer::class)
 			->hasMigration('create_users_table')
+			->hasMigration('create_setup_menus_table')
 			->hasMigration('add_fields_to_users_table')
-			// ->hasMigration('create_personal_access_tokens_table')
+			->hasMigration('create_media_table')
 			->hasMigration('create_sessions_table')
 			->hasMigration('create_failed_jobs_table')
 			->hasMigration('create_language_lines_table')
@@ -35,7 +37,9 @@ class InitServiceProvider extends PackageServiceProvider
 			->hasMigration('create_permission_tables')
 			->hasTranslations()
 			->hasAssets()
-			->hasRoutes('web')
+			->hasViewComposer('init::config', InitConfigComposer::class)
+			->hasViewComponent('init', Meta::class)
+			->hasRoutes(['setup', 'config', 'web'])
 			->hasCommand(InstallInitCommand::class);
 	}
 
@@ -57,6 +61,7 @@ class InitServiceProvider extends PackageServiceProvider
 		// and event pushed to the web group
 		$router->aliasMiddleware('role', RoleMiddleware::class);
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
+		$router->aliasMiddleware('role-or-permission', RoleOrPermissionMiddleware::class);
 		$router->pushMiddlewareToGroup('web', 'role');
 		$router->pushMiddlewareToGroup('web', 'permission');
 	}

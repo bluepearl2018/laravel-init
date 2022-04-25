@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-	@component('init::components.seo.meta', ['title' => config('app.name'), 'description' => 'Eutranet installer'])@endcomponent
+	<x-init-meta></x-init-meta>
 	<body class="font-sans antialiased">
 	<div class="bg-gray-100">
 		<div class="max-w-7xl mx-auto p-8">
