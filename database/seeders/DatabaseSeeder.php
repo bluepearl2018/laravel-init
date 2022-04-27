@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
+		$this->call(LanguageSeeder::class);
+
 		if (!Schema::hasTable('install_statuses')) {
 			Schema::create('install_statuses', function (Blueprint $table) {
 				$table->bigIncrements('id');

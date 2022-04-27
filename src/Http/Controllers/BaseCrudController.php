@@ -3,7 +3,7 @@
 namespace Eutranet\Init\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Eutranet\Commons\Models\Language;
+use Eutranet\Init\Models\Language;
 use Flash;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;

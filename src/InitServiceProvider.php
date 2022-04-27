@@ -27,6 +27,7 @@ class InitServiceProvider extends PackageServiceProvider
 			->hasMigration('create_media_table')
 			->hasMigration('create_sessions_table')
 			->hasMigration('create_failed_jobs_table')
+			->hasMigration('create_languages_table')
 			->hasMigration('create_language_lines_table')
 			->hasMigration('create_oauth_access_tokens_table')
 			->hasMigration('create_oauth_auth_codes_table')
