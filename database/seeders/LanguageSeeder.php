@@ -3,7 +3,8 @@
 namespace Eutranet\Init\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Eutranet\Commons\Models\Language;
+use Eutranet\Init\Models\Language;
+use DB;
 
 class LanguageSeeder extends Seeder
 {
@@ -3064,7 +3065,7 @@ class LanguageSeeder extends Seeder
 			];
 		if (Language::count() < 1) {
 			foreach ($languages as $l) {
-				\DB::table('languages')->insert(
+				DB::table('languages')->insert(
 					$l
 				);
 			}
