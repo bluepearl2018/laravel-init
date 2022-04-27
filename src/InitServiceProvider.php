@@ -22,7 +22,7 @@ class InitServiceProvider extends PackageServiceProvider
 			->hasConfigFile(['eutranet-init', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
 			->hasViews('init')
 			->hasMigration('create_users_table')
-			->hasMigration('create_setup_menus_table')
+			->hasMigration('create_menus_table')
 			->hasMigration('add_fields_to_users_table')
 			->hasMigration('create_media_table')
 			->hasMigration('create_sessions_table')

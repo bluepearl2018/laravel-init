@@ -48,9 +48,9 @@ class Menu extends Model
 	{
 		// field, type, required, placeholder, tip, model for select
 		return [
-			'component' => ['input', 'text', 'required', 'Component', 'Like... users.tabs.nav'],
-			'name' => ['input', 'text', 'required', 'Name', 'Enter the name'],
-			'route_class' => ['input', 'text', 'required', 'Route class', 'Enter the route class'],
+			'label' => ['input', 'text', 'required', 'Component', 'Like... users.tabs.nav'],
+			'menu_code' => ['input', 'text', 'required', 'Name', 'Enter the name'],
+			'package' => ['input', 'text', 'required', 'Route class', 'Enter the route class'],
 		];
 	}
 

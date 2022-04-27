@@ -19,26 +19,22 @@ class Media extends \Spatie\MediaLibrary\MediaCollections\Models\Media
 	/**
 	 * @var string
 	 */
-	protected $table = "menus";
+	protected $table = "media";
 	/**
 	 * @var string[]
 	 */
 	protected $fillable = [
-		'label',
-		'menu_code',
-		'package',
-		'route',
-		'params',
-		'is_active',
-		'class'
+		'model_type',
+		'model_id',
+		'collection_name',
+		'name',
+		'file_name'
 	];
+
 	/**
 	 * @var array|string[]
 	 */
-	protected array $translatable = [
-		'label',
-		'name'
-	];
+	protected array $translatable = [ ];
 
 	/**
 	 * @return string[][]

@@ -1,9 +1,7 @@
 {
   "name": "eutranet/laravel-init",
-  "description": "Tools for creating Laravel packages at Eutranet. Fork of Spatie Laravel Package Tools.",
+  "description": "In order to initialize Eutranet's core packages. Some code forked from spatie/laravel-package-tools.",
   "keywords": [
-    "spatie",
-    "laravel-package-tools",
     "eutranet",
     "package"
   ],
