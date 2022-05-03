@@ -12,7 +12,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Eutranet\Init\View\Composers\InitConfigComposer;
 use Eutranet\Init\View\Components\Meta;
 use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
-use Eutranet\Init\Providers\InitMenuServiceProvider;
 
 class InitServiceProvider extends PackageServiceProvider
 {
@@ -70,6 +69,8 @@ class InitServiceProvider extends PackageServiceProvider
     {
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+	        $this->loadRoutesFrom(__DIR__ . '/../routes/setup.php');
+	        $this->loadRoutesFrom(__DIR__ . '/../routes/config.php');
         });
     }
 
