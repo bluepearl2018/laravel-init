@@ -17,7 +17,12 @@
     "laravel": {
       "providers": [
         "Eutranet\\Init\\InitServiceProvider"
-      ]
+      ],
+      "aliases":
+      {
+        "OverallMenuFacade": "Eutranet\\Init\\Facades\\OverallMenuFacade",
+        "InitMenu": "Eutranet\\Init\\Facades\\InitMenuFacade"
+      }
     }
   },
   "require": {

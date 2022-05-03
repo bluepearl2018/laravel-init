@@ -1,7 +1,7 @@
 @extends('dashboard')
 @section('content')
 	<h1 class="text-4xl">{{$message ?? 'NO MESSAGE' }}</h1>
-	<p class="mb-2 italic">{{__('Until instllation set complete, you will be able to navigate back to this page.')}}</p>
+	<p class="mb-2 italic">{{__('Until installation set complete, you will be able to navigate back to this page.')}}</p>
 	<div class="container flex flex-col self-center">
 		<h2 class="text-2xl">{{__('Installation order')}}</h2>
 		<ul class="list-inside p-4 list-decimal">
@@ -53,10 +53,10 @@
 			<li class="flex flex-row">
 				@if(Schema::hasTable('install_statuses') && DB::table('install_statuses')->where('package_name', 'be')->get()->first())
 					<i class="fa fa-check text-green-500 mr-2 inline-block"></i>
-					{{__('Install eutranet/laravel-be')}}
+					{{__('Install eutranet/laravel-corporate')}}
 				@else
 					<p><i class="fa fa-times text-red-500 mr-2 inline-block"></i> Install package with $ composer require
-						eutranet/laravel-be</p>
+						eutranet/laravel-corporate</p>
 				@endif
 			</li>
 			<li class="flex flex-row">

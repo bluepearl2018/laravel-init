@@ -19,10 +19,11 @@ class DatabaseSeeder extends Seeder
 	{
 		$this->call(LanguageSeeder::class);
 
-		if (!Schema::hasTable('install_statuses')) {
+		if ( ! Schema::hasTable('install_statuses')) {
 			Schema::create('install_statuses', function (Blueprint $table) {
 				$table->bigIncrements('id');
 				$table->string('package_name');
+				$table->string('namespace')->default('Eutranet');
 				$table->boolean('installed')->default(false);
 				$table->nullableTimestamps();
 			});

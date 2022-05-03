@@ -56,9 +56,10 @@ class InstallPackageCommand extends Command
 	{
 
 		if (!Schema::hasTable('install_statuses')) {
-			Schema::create('install_statuses', function (BluePrint $table) {
+			Schema::create('install_statuses', function (Blueprint $table) {
 				$table->bigIncrements('id');
 				$table->string('package_name');
+				$table->string('namespace')->default('Eutranet');
 				$table->boolean('installed')->default(false);
 				$table->nullableTimestamps();
 			});

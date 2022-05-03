@@ -8,6 +8,8 @@ class Package
 {
 	public string $name;
 
+	public string $menuName;
+
 	public array $configFileNames = [];
 
 	public bool $hasViews = false;
@@ -168,6 +170,13 @@ class Package
 		foreach ($middlewares as $middleware) {
 			$this->aliasMiddlewares = $middleware;
 		}
+		return $this;
+	}
+
+	public function hasMenu(string $menuName): self
+	{
+		$this->menuName = $menuName;
+
 		return $this;
 	}
 

@@ -2,12 +2,9 @@
 
 namespace Eutranet\Init\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-abstract class PackageMenuServiceProvider extends ServiceProvider
+abstract class PackageMenuServiceProvider extends BaseServiceProvider
 {
-	public function boot()
-	{
-		// This should register the Commons Menu
-	}
+
 }

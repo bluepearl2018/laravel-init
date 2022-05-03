@@ -2,10 +2,25 @@
 
 namespace Eutranet\Init\Providers;
 
+use Eutranet\Init\Models\Menu;
+use Eutranet\Init\Menus\PackageMenu;
+
 class InitMenuServiceProvider extends PackageMenuServiceProvider
 {
-	public function boot()
+	/**
+	 * Register any application services.
+	 *
+	 * @return void
+	 */
+	public function register()
 	{
-		// This should register the Commons Menu
+		parent::register();
 	}
+
+	protected function registerMenu()
+	{
+		$packageName = 'eutranet-init';
+
+	}
+
 }

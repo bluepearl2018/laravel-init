@@ -12,9 +12,14 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Eutranet\Init\View\Composers\InitConfigComposer;
 use Eutranet\Init\View\Components\Meta;
 use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+use Eutranet\Init\Providers\InitMenuServiceProvider;
+use Eutranet\Init\Providers\PackageMenuServiceProvider;
+use Spatie\Menu\Laravel\Menu;
+use Spatie\Menu\Laravel\Link;
 
 class InitServiceProvider extends PackageServiceProvider
 {
+
 	public function configurePackage(Package $package): void
 	{
 		$package
@@ -63,8 +68,7 @@ class InitServiceProvider extends PackageServiceProvider
 		$router->aliasMiddleware('role', RoleMiddleware::class);
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		$router->aliasMiddleware('role-or-permission', RoleOrPermissionMiddleware::class);
-		$router->pushMiddlewareToGroup('web', 'role');
-		$router->pushMiddlewareToGroup('web', 'permission');
+
 	}
 
 	protected function registerRoutes()
@@ -79,6 +83,21 @@ class InitServiceProvider extends PackageServiceProvider
 		return [
 			// 'middleware' => config('eutranet-frontend.middlewares'),
 		];
+	}
+
+	public function register()
+	{
+		parent::register();
+		$this->app->register(PackageMenuServiceProvider::class);
+		$this->app->register(InitMenuServiceProvider::class);
+		Menu::macro('main', function () {
+			return Menu::new()
+				->route('backend.users.create', 'Create a user')
+				->route('backend.users.index', 'Select a user')
+				->route('backend.users.search', 'Search user')
+				->route('backend.user-flags.index', 'Follow-up')
+				->setActiveFromRequest();
+		});
 	}
 
 }
