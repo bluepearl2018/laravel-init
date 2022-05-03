@@ -1,4 +1,4 @@
-@extends('dashboard')
+@extends('init::layouts.master')
 @section('content')
 	<h1 class="text-4xl">{{$message ?? 'NO MESSAGE' }}</h1>
 	<p class="mb-2 italic">{{__('Until installation set complete, you will be able to navigate back to this page.')}}</p>
