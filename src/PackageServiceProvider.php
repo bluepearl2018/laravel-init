@@ -13,185 +13,183 @@ use Eutranet\Init\Console\Commands\InstallInitCommand;
 
 abstract class PackageServiceProvider extends ServiceProvider
 {
-	protected Package $package;
+    protected Package $package;
 
-	/**
-	 * @throws InvalidPackage
-	 */
-	public function register()
-	{
-		$this->registeringPackage();
+    /**
+     * @throws InvalidPackage
+     */
+    public function register()
+    {
+        $this->registeringPackage();
 
-		$this->package = new Package();
+        $this->package = new Package();
 
-		$this->package->setBasePath($this->getPackageBaseDir());
+        $this->package->setBasePath($this->getPackageBaseDir());
 
-		$this->configurePackage($this->package);
+        $this->configurePackage($this->package);
 
-		if (empty($this->package->name)) {
-			throw InvalidPackage::nameIsRequired();
-		}
+        if (empty($this->package->name)) {
+            throw InvalidPackage::nameIsRequired();
+        }
 
-		foreach ($this->package->configFileNames as $configFileName) {
-			$this->mergeConfigFrom($this->package->basePath("/../config/{$configFileName}.php"), $configFileName);
-		}
+        foreach ($this->package->configFileNames as $configFileName) {
+            $this->mergeConfigFrom($this->package->basePath("/../config/{$configFileName}.php"), $configFileName);
+        }
 
-		$this->packageRegistered();
+        $this->packageRegistered();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function registeringPackage()
-	{
-	}
+    public function registeringPackage()
+    {
+    }
 
-	protected function getPackageBaseDir(): string
-	{
-		$reflector = new ReflectionClass(get_class($this));
+    protected function getPackageBaseDir(): string
+    {
+        $reflector = new ReflectionClass(get_class($this));
 
-		return dirname($reflector->getFileName());
-	}
+        return dirname($reflector->getFileName());
+    }
 
-	abstract public function configurePackage(Package $package): void;
+    abstract public function configurePackage(Package $package): void;
 
-	public function packageRegistered()
-	{
-		$this->commands(InstallInitCommand::class);
+    public function packageRegistered()
+    {
+        $this->commands(InstallInitCommand::class);
+    }
 
-	}
+    public function boot()
+    {
+        $this->bootingPackage();
 
-	public function boot()
-	{
-		$this->bootingPackage();
+        if ($this->package->hasTranslations) {
+            $langPath = 'vendor/' . $this->package->shortName();
 
-		if ($this->package->hasTranslations) {
-			$langPath = 'vendor/' . $this->package->shortName();
+            $langPath = (function_exists('lang_path'))
+                ? lang_path($langPath)
+                : resource_path('lang/' . $langPath);
+        }
 
-			$langPath = (function_exists('lang_path'))
-				? lang_path($langPath)
-				: resource_path('lang/' . $langPath);
-		}
+        if ($this->app->runningInConsole()) {
+            foreach ($this->package->configFileNames as $configFileName) {
+                $this->publishes([
+                    $this->package->basePath("/../config/{$configFileName}.php") => config_path("{$configFileName}.php"),
+                ], "{$this->package->shortName()}-config");
+            }
 
-		if ($this->app->runningInConsole()) {
-			foreach ($this->package->configFileNames as $configFileName) {
-				$this->publishes([
-					$this->package->basePath("/../config/{$configFileName}.php") => config_path("{$configFileName}.php"),
-				], "{$this->package->shortName()}-config");
-			}
+            if ($this->package->hasViews) {
+                $this->publishes([
+                    $this->package->basePath('/../resources/views') => base_path("resources/views/vendor/{$this->package->shortName()}"),
+                ], "{$this->package->shortName()}-views");
+            }
 
-			if ($this->package->hasViews) {
-				$this->publishes([
-					$this->package->basePath('/../resources/views') => base_path("resources/views/vendor/{$this->package->shortName()}"),
-				], "{$this->package->shortName()}-views");
-			}
+            $now = Carbon::now();
+            foreach ($this->package->migrationFileNames as $migrationFileName) {
+                $filePath = $this->package->basePath("/../database/migrations/{$migrationFileName}.php");
+                if (!file_exists($filePath)) {
+                    // Support for the .stub file extension
+                    $filePath .= '.stub';
+                }
 
-			$now = Carbon::now();
-			foreach ($this->package->migrationFileNames as $migrationFileName) {
-				$filePath = $this->package->basePath("/../database/migrations/{$migrationFileName}.php");
-				if (!file_exists($filePath)) {
-					// Support for the .stub file extension
-					$filePath .= '.stub';
-				}
+                $this->publishes([
+                    $filePath => $this->generateMigrationName(
+                        $migrationFileName,
+                        $now->addSecond()
+                    ),], "{$this->package->shortName()}-migrations");
+            }
 
-				$this->publishes([
-					$filePath => $this->generateMigrationName(
-						$migrationFileName,
-						$now->addSecond()
-					),], "{$this->package->shortName()}-migrations");
-			}
+            if ($this->package->hasTranslations) {
+                $this->publishes([
+                    $this->package->basePath('/../resources/lang') => $langPath,
+                ], "{$this->package->shortName()}-translations");
+            }
 
-			if ($this->package->hasTranslations) {
-				$this->publishes([
-					$this->package->basePath('/../resources/lang') => $langPath,
-				], "{$this->package->shortName()}-translations");
-			}
+            if ($this->package->hasAssets) {
+                $this->publishes([
+                    $this->package->basePath('/../resources/dist') => public_path("vendor/{$this->package->shortName()}"),
+                ], "{$this->package->shortName()}-assets");
+            }
+        }
 
-			if ($this->package->hasAssets) {
-				$this->publishes([
-					$this->package->basePath('/../resources/dist') => public_path("vendor/{$this->package->shortName()}"),
-				], "{$this->package->shortName()}-assets");
-			}
-		}
+        if (!empty($this->package->commands)) {
+            $this->commands($this->package->commands);
+        }
 
-		if (!empty($this->package->commands)) {
-			$this->commands($this->package->commands);
-		}
+        if (!empty($this->package->aliasMiddlewares)) {
+            foreach ($this->package->aliasMiddlewares as $key => $middleware) {
+                $this->app->make(Router::class)->aliasMiddleware($key, $middleware);
+            }
+        }
 
-		if (!empty($this->package->aliasMiddlewares)) {
-			foreach ($this->package->aliasMiddlewares as $key => $middleware) {
-				$this->app->make(Router::class)->aliasMiddleware($key, $middleware);
-			}
-		}
+        if ($this->package->hasTranslations) {
+            $this->loadTranslationsFrom(
+                $this->package->basePath('/../resources/lang/'),
+                $this->package->shortName()
+            );
 
-		if ($this->package->hasTranslations) {
-			$this->loadTranslationsFrom(
-				$this->package->basePath('/../resources/lang/'),
-				$this->package->shortName()
-			);
+            $this->loadJsonTranslationsFrom($this->package->basePath('/../resources/lang/'));
 
-			$this->loadJsonTranslationsFrom($this->package->basePath('/../resources/lang/'));
+            $this->loadJsonTranslationsFrom($langPath);
+        }
 
-			$this->loadJsonTranslationsFrom($langPath);
-		}
+        if ($this->package->hasViews) {
+            $this->loadViewsFrom($this->package->basePath('/../resources/views'), $this->package->viewNamespace());
+        }
 
-		if ($this->package->hasViews) {
-			$this->loadViewsFrom($this->package->basePath('/../resources/views'), $this->package->viewNamespace());
-		}
+        foreach ($this->package->viewComponents as $componentClass => $prefix) {
+            $this->loadViewComponentsAs($prefix, [$componentClass]);
+        }
 
-		foreach ($this->package->viewComponents as $componentClass => $prefix) {
-			$this->loadViewComponentsAs($prefix, [$componentClass]);
-		}
-
-		if (count($this->package->viewComponents)) {
-			$this->publishes([
-				$this->package->basePath('/../Components') => base_path("app/View/Components/vendor/{$this->package->shortName()}"),
-			], "{$this->package->name}-components");
-		}
+        if (count($this->package->viewComponents)) {
+            $this->publishes([
+                $this->package->basePath('/../Components') => base_path("app/View/Components/vendor/{$this->package->shortName()}"),
+            ], "{$this->package->name}-components");
+        }
 
 
-		foreach ($this->package->routeFileNames as $routeFileName) {
-			$this->loadRoutesFrom("{$this->package->basePath('/../routes/')}{$routeFileName}.php");
-		}
+        foreach ($this->package->routeFileNames as $routeFileName) {
+            $this->loadRoutesFrom("{$this->package->basePath('/../routes/')}{$routeFileName}.php");
+        }
 
-		foreach ($this->package->sharedViewData as $name => $value) {
-			View::share($name, $value);
-		}
+        foreach ($this->package->sharedViewData as $name => $value) {
+            View::share($name, $value);
+        }
 
-		foreach ($this->package->viewComposers as $viewName => $viewComposer) {
-			View::composer($viewName, $viewComposer);
-		}
+        foreach ($this->package->viewComposers as $viewName => $viewComposer) {
+            View::composer($viewName, $viewComposer);
+        }
 
-		$this->packageBooted();
+        $this->packageBooted();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function bootingPackage()
-	{
-	}
+    public function bootingPackage()
+    {
+    }
 
-	public static function generateMigrationName(string $migrationFileName, Carbon $now): string
-	{
-		$migrationsPath = 'migrations/';
+    public static function generateMigrationName(string $migrationFileName, Carbon $now): string
+    {
+        $migrationsPath = 'migrations/';
 
-		$len = strlen($migrationFileName) + 4;
+        $len = strlen($migrationFileName) + 4;
 
-		if (Str::contains($migrationFileName, '/')) {
-			$migrationsPath .= Str::of($migrationFileName)->beforeLast('/')->finish('/');
-			$migrationFileName = Str::of($migrationFileName)->afterLast('/');
-		}
+        if (Str::contains($migrationFileName, '/')) {
+            $migrationsPath .= Str::of($migrationFileName)->beforeLast('/')->finish('/');
+            $migrationFileName = Str::of($migrationFileName)->afterLast('/');
+        }
 
-		foreach (glob(database_path("${migrationsPath}*.php")) as $filename) {
-			if ((substr($filename, -$len) === $migrationFileName . '.php')) {
-				return $filename;
-			}
-		}
+        foreach (glob(database_path("${migrationsPath}*.php")) as $filename) {
+            if ((substr($filename, -$len) === $migrationFileName . '.php')) {
+                return $filename;
+            }
+        }
 
-		return database_path($migrationsPath . $now->format('Y_m_d_His') . '_' . Str::of($migrationFileName)->snake()->finish('.php'));
-	}
+        return database_path($migrationsPath . $now->format('Y_m_d_His') . '_' . Str::of($migrationFileName)->snake()->finish('.php'));
+    }
 
-	public function packageBooted()
-	{
-
-	}
+    public function packageBooted()
+    {
+    }
 }

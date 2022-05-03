@@ -6,198 +6,198 @@ use Illuminate\Support\Str;
 
 class Package
 {
-	public string $name;
+    public string $name;
 
-	public string $menuName;
+    public string $menuName;
 
-	public array $configFileNames = [];
+    public array $configFileNames = [];
 
-	public bool $hasViews = false;
+    public bool $hasViews = false;
 
-	public ?string $viewNamespace = NULL;
+    public ?string $viewNamespace = null;
 
-	public bool $hasTranslations = false;
+    public bool $hasTranslations = false;
 
-	public bool $hasAssets = false;
+    public bool $hasAssets = false;
 
-	public array $migrationFileNames = [];
+    public array $migrationFileNames = [];
 
-	public array $aliasMiddlewares = [];
+    public array $aliasMiddlewares = [];
 
-	public array $routeFileNames = [];
+    public array $routeFileNames = [];
 
-	public array $commands = [];
+    public array $commands = [];
 
-	public array $viewComponents = [];
+    public array $viewComponents = [];
 
-	public array $sharedViewData = [];
+    public array $sharedViewData = [];
 
-	public array $viewComposers = [];
+    public array $viewComposers = [];
 
-	public string $basePath;
+    public string $basePath;
 
-	public function name(string $name): self
-	{
-		$this->name = $name;
+    public function name(string $name): self
+    {
+        $this->name = $name;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasConfigFile($configFileName = NULL): self
-	{
-		$configFileName = $configFileName ?? $this->shortName();
+    public function hasConfigFile($configFileName = null): self
+    {
+        $configFileName = $configFileName ?? $this->shortName();
 
-		if (!is_array($configFileName)) {
-			$configFileName = [$configFileName];
-		}
+        if (!is_array($configFileName)) {
+            $configFileName = [$configFileName];
+        }
 
-		$this->configFileNames = $configFileName;
+        $this->configFileNames = $configFileName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function shortName(): string
-	{
-		return Str::after($this->name, 'laravel-');
-	}
+    public function shortName(): string
+    {
+        return Str::after($this->name, 'laravel-');
+    }
 
-	public function hasViews(string $namespace = NULL): self
-	{
-		$this->hasViews = true;
+    public function hasViews(string $namespace = null): self
+    {
+        $this->hasViews = true;
 
-		$this->viewNamespace = $namespace;
+        $this->viewNamespace = $namespace;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasViewComponent(string $prefix, string $viewComponentName): self
-	{
-		$this->viewComponents[$viewComponentName] = $prefix;
+    public function hasViewComponent(string $prefix, string $viewComponentName): self
+    {
+        $this->viewComponents[$viewComponentName] = $prefix;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasViewComponents(string $prefix, ...$viewComponentNames): self
-	{
-		foreach ($viewComponentNames as $componentName) {
-			$this->viewComponents[$componentName] = $prefix;
-		}
+    public function hasViewComponents(string $prefix, ...$viewComponentNames): self
+    {
+        foreach ($viewComponentNames as $componentName) {
+            $this->viewComponents[$componentName] = $prefix;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function sharesDataWithAllViews(string $name, $value): self
-	{
-		$this->sharedViewData[$name] = $value;
+    public function sharesDataWithAllViews(string $name, $value): self
+    {
+        $this->sharedViewData[$name] = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasViewComposer($view, $viewComposer): self
-	{
-		if (!is_array($view)) {
-			$view = [$view];
-		}
+    public function hasViewComposer($view, $viewComposer): self
+    {
+        if (!is_array($view)) {
+            $view = [$view];
+        }
 
-		foreach ($view as $viewName) {
-			$this->viewComposers[$viewName] = $viewComposer;
-		}
+        foreach ($view as $viewName) {
+            $this->viewComposers[$viewName] = $viewComposer;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasTranslations(): self
-	{
-		$this->hasTranslations = true;
+    public function hasTranslations(): self
+    {
+        $this->hasTranslations = true;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasAssets(): self
-	{
-		$this->hasAssets = true;
+    public function hasAssets(): self
+    {
+        $this->hasAssets = true;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasMigration(string $migrationFileName): self
-	{
-		$this->migrationFileNames[] = $migrationFileName;
+    public function hasMigration(string $migrationFileName): self
+    {
+        $this->migrationFileNames[] = $migrationFileName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasMigrations(...$migrationFileNames): self
-	{
-		$this->migrationFileNames = array_merge(
-			$this->migrationFileNames,
-			collect($migrationFileNames)->flatten()->toArray()
-		);
+    public function hasMigrations(...$migrationFileNames): self
+    {
+        $this->migrationFileNames = array_merge(
+            $this->migrationFileNames,
+            collect($migrationFileNames)->flatten()->toArray()
+        );
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasCommand(string $commandClassName): self
-	{
-		$this->commands[] = $commandClassName;
+    public function hasCommand(string $commandClassName): self
+    {
+        $this->commands[] = $commandClassName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasCommands(...$commandClassNames): self
-	{
-		$this->commands = array_merge($this->commands, collect($commandClassNames)->flatten()->toArray());
+    public function hasCommands(...$commandClassNames): self
+    {
+        $this->commands = array_merge($this->commands, collect($commandClassNames)->flatten()->toArray());
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasRoute(string $routeFileName): self
-	{
-		$this->routeFileNames[] = $routeFileName;
+    public function hasRoute(string $routeFileName): self
+    {
+        $this->routeFileNames[] = $routeFileName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasRoutes(...$routeFileNames): self
-	{
-		$this->routeFileNames = array_merge($this->routeFileNames, collect($routeFileNames)->flatten()->toArray());
+    public function hasRoutes(...$routeFileNames): self
+    {
+        $this->routeFileNames = array_merge($this->routeFileNames, collect($routeFileNames)->flatten()->toArray());
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function hasMiddlewares(...$middlewares): self
-	{
-		foreach ($middlewares as $middleware) {
-			$this->aliasMiddlewares = $middleware;
-		}
-		return $this;
-	}
+    public function hasMiddlewares(...$middlewares): self
+    {
+        foreach ($middlewares as $middleware) {
+            $this->aliasMiddlewares = $middleware;
+        }
+        return $this;
+    }
 
-	public function hasMenu(string $menuName): self
-	{
-		$this->menuName = $menuName;
+    public function hasMenu(string $menuName): self
+    {
+        $this->menuName = $menuName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function basePath(string $directory = NULL): string
-	{
-		if ($directory === NULL) {
-			return $this->basePath;
-		}
+    public function basePath(string $directory = null): string
+    {
+        if ($directory === null) {
+            return $this->basePath;
+        }
 
-		return $this->basePath . DIRECTORY_SEPARATOR . ltrim($directory, DIRECTORY_SEPARATOR);
-	}
+        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($directory, DIRECTORY_SEPARATOR);
+    }
 
-	public function viewNamespace(): string
-	{
-		return $this->viewNamespace ?? $this->shortName();
-	}
+    public function viewNamespace(): string
+    {
+        return $this->viewNamespace ?? $this->shortName();
+    }
 
-	public function setBasePath(string $path): self
-	{
-		$this->basePath = $path;
+    public function setBasePath(string $path): self
+    {
+        $this->basePath = $path;
 
-		return $this;
-	}
+        return $this;
+    }
 }
