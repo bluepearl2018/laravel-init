@@ -86,5 +86,6 @@ class InitServiceProvider extends PackageServiceProvider
     {
         parent::register();
         $this->app->register(MetaTagsServiceProvider::class);
+	    $this->mergeConfigFrom(__DIR__.'/../config/guards.php', 'auth');
     }
 }
