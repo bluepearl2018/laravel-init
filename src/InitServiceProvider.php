@@ -20,7 +20,7 @@ class InitServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-init')
-            ->hasConfigFile(['eutranet-init', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
+            ->hasConfigFile(['eutranet-init', 'entranet-auth', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
             ->hasViews('init')
             ->hasMigration('create_users_table')
             ->hasMigration('create_menus_table')
@@ -86,6 +86,6 @@ class InitServiceProvider extends PackageServiceProvider
     {
         parent::register();
         $this->app->register(MetaTagsServiceProvider::class);
-	    $this->mergeConfigFrom(__DIR__.'/../config/guards.php', 'auth');
+	    $this->mergeConfigFrom(__DIR__.'/../config/eutranet-auth.php', 'auth');
     }
 }
