@@ -20,7 +20,7 @@ class InitServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-init')
-            ->hasConfigFile(['eutranet-init', 'entranet-auth', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
+            ->hasConfigFile(['eutranet-init', 'eutranet-auth', 'translatable', 'translation-loader', 'media-library', 'permission']) // php artisan vendor:publish --tag=your-laravel-init-name-config
             ->hasViews('init')
             ->hasMigration('create_users_table')
             ->hasMigration('create_menus_table')
