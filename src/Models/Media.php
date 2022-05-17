@@ -40,12 +40,13 @@ class Media extends \Spatie\MediaLibrary\MediaCollections\Models\Media
 	 * @return string[][]
 	 */
 
+	#[ArrayShape(['collection_name' => "array", 'file_name' => "array"])]
 	public static function getFields(): array
 	{
 		// field, type, required, placeholder, tip, model for select
 		return [
-			'collection_name' => ['input', 'text', 'required', 'Collection name', 'Slugified'],
-			'file_name' => ['input', 'text', 'required', 'File name', 'The file name'],
+			'collection_name' => ['input', 'text', 'required', trans('media.Collection name'), trans('media.Slugified')],
+			'file_name' => ['input', 'text', 'required', trans('media.File name'), trans('media.The file name')],
 		];
 	}
 

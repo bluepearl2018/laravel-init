@@ -35,8 +35,8 @@ class InstallStatus extends Model {
 	{
 		// field, type, required, placeholder, tip, model for select
 		return [
-			'package_name' => ['input', 'text', 'required', 'Component', 'Like... users.tabs.nav'],
-			'installed' => ['checkbox', 'option', 'optional', 'Is installed', 'Check if true']
+			'package_name' => ['input', 'text', 'required', trans('install-statuses.Component'), trans('install-statuses.Like... users.tabs.nav')],
+			'installed' => ['checkbox', 'option', 'optional', trans('install-statuses.Is installed'), trans('install-statuses.Check if true')]
 		];
 	}
 

@@ -43,14 +43,15 @@ class Menu extends Model
 	/**
 	 * @return string[][]
 	 */
-	#[ArrayShape(['component' => "string[]", 'name' => "string[]", 'route_class' => "string[]"])]
+
+	#[ArrayShape(['label' => "array", 'menu_code' => "array", 'package' => "array"])]
 	public static function getFields(): array
 	{
 		// field, type, required, placeholder, tip, model for select
 		return [
-			'label' => ['input', 'text', 'required', 'Component', 'Like... users.tabs.nav'],
-			'menu_code' => ['input', 'text', 'required', 'Name', 'Enter the name'],
-			'package' => ['input', 'text', 'required', 'Route class', 'Enter the route class'],
+			'label' => ['input', 'text', 'required', trans('menus.Component'), trans('menus.Like... users.tabs.nav')],
+			'menu_code' => ['input', 'text', 'required', trans('menus.Name'), trans('menus.Enter the name')],
+			'package' => ['input', 'text', 'required', trans('menus.Route class'), trans('menus.Enter the route class')],
 		];
 	}
 
